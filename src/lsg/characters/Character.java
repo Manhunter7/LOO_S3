@@ -116,7 +116,7 @@ public class Character {
     }
 
     /***************************** FIGHT ****************************/
-    public int attackWith(Weapon weapon) {
+    private int attackWith(Weapon weapon) {
         float stam;
         float precision = (weapon.getMaxDamage() - weapon.getMinDamage()) * (dice.roll()/100f);
         int dmg = weapon.getMinDamage();
