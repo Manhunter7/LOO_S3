@@ -16,5 +16,6 @@ public class Monster extends Character
     {
         super("Monster " +INSTANCES_COUNT, DEFAULT_STAMINA, DEFAULT_LIFE, DEFAULT_SKINTHICKNESS);
         INSTANCES_COUNT ++;
+        ..
     }
 }
