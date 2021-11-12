@@ -3,6 +3,8 @@ package lsg.characters;
 import lsg.helpers.Dice;
 import lsg.weapons.Weapon;
 
+import java.util.Scanner;
+
 public class Character {
 
     /********** DECLARATION DES VARIABLES ********/
@@ -12,6 +14,8 @@ public class Character {
     private int stamina;
     private int maxStamina;
     private Weapon weapon;
+    private float armor;
+    private java.util.Scanner scn = new Scanner(System.in);
     /*************************** GETTERS *************************/
 
     protected String getName() //nom
@@ -43,6 +47,7 @@ public class Character {
     {
         return weapon;
     }
+    protected float getArmor(){return this.armor;}
     /********************** SETTERS ***********************/
 
     protected void setName (String newName)
@@ -67,11 +72,13 @@ public class Character {
     protected void setMaxStamina(int maxStamina) {
         this.maxStamina = maxStamina;
     }
+
     public void setWeapon (Weapon newWeapon)
     {
         this.weapon = newWeapon;
     }
 
+    protected void setArmor (float newArmor){this.armor = newArmor;}
     /*************************** OVERRIDE ***********************/
 
     @Override
@@ -106,13 +113,14 @@ public class Character {
 
     /***************** BUILDER ***********************/
 
-    public Character(String name, int Stamina, int Life)
+    public Character(String name, int Stamina, int Life, float Armor)
     {
         setName(name);
         setStamina(Stamina);
         setLife(Life);
         setMaxLife(Life);
         setMaxStamina(Stamina);
+        setArmor(Armor);
     }
 
     /***************************** FIGHT ****************************/
