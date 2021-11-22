@@ -47,6 +47,7 @@ public class Character {
     {
         return weapon;
     }
+
     protected float getArmor(){return this.armor;}
     /********************** SETTERS ***********************/
 

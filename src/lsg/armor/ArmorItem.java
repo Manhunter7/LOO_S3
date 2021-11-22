@@ -18,6 +18,13 @@ public class ArmorItem {
     public String toString()
     {
         String classeString = getClass().getSimpleName();
-        String armorValueString = "(" + getArmorValue() + ")";
+        String armorValueString = " (" + getArmorValue() + ")";
+        return String.format(classeString, armorValueString);
+    }
+
+    /******************* CONSTRUCTOR ***********************/
+    public ArmorItem(String newName, float newArmorValue){
+       setName(newName);
+       setArmorValue(newArmorValue);
     }
 }
