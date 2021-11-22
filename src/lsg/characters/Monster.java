@@ -8,7 +8,7 @@ public class Monster extends Character
     private static int INSTANCES_COUNT = 0;
     private static float DEFAULT_SKINTHICKNESS = 20.0F; //A changer si besoin
 
-    /********************* BUILDER *************************/
+    /********************* CONSTRUCTOR *************************/
 
 
 

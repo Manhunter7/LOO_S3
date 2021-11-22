@@ -41,7 +41,7 @@ public class Weapon {
         this.durability = newDurability;
     }
 
-    /********************* BUILDER ********************/
+    /********************* CONSTRUCTOR ********************/
     public Weapon (String name, int newMinDamage, int newMaxDamage, int newStamCost, int newDurability)
     {
         setDurability(newDurability);

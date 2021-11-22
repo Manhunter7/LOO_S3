@@ -112,7 +112,7 @@ public class Character {
         return this.getLife() > 0;
     }
 
-    /***************** BUILDER ***********************/
+    /***************** CONSTRUCTOR ***********************/
 
     public Character(String name, int Stamina, int Life, float Armor)
     {

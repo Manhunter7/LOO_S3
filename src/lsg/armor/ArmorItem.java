@@ -7,10 +7,10 @@ public class ArmorItem {
     private float armorValue;
 
     /******************* GETTERS / SETTERS **********************/
-    protected String getName(){return this.name;}
+    public String getName(){return this.name;}
     protected void setName(String newName){this.name = newName;}
 
-    protected float getArmorValue(){return this.armorValue;}
+    public float getArmorValue(){return this.armorValue;}
     protected void setArmorValue(float newArmorValue){this.armorValue = newArmorValue;}
 
     /********************** OVERRIDE ******************/
