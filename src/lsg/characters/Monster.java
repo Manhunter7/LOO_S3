@@ -10,8 +10,6 @@ public class Monster extends Character
 
     /********************* CONSTRUCTOR *************************/
 
-
-
     public Monster()
     {
         super("Monster " +INSTANCES_COUNT, DEFAULT_STAMINA, DEFAULT_LIFE, DEFAULT_SKINTHICKNESS);

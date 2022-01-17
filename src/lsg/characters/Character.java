@@ -15,6 +15,7 @@ public class Character {
     private int maxStamina;
     private Weapon weapon;
     private float armor;
+    private Dice dice;
     private java.util.Scanner scn = new Scanner(System.in);
     /*************************** GETTERS *************************/
 
@@ -100,8 +101,6 @@ public class Character {
         return String.format("%-9s %-16s %-12s %-12s %-7s", classeString, name, lifeString, stamString, alive);
     }
 
-    Dice dice = new Dice(101);
-
     public void printStats ()
     {
         System.out.println(this);
@@ -114,14 +113,15 @@ public class Character {
 
     /***************** CONSTRUCTOR ***********************/
 
-    public Character(String name, int Stamina, int Life, float Armor)
+    public Character(String name, int Stamina, int Life /*, float Armor*/)
     {
         setName(name);
         setStamina(Stamina);
         setLife(Life);
         setMaxLife(Life);
         setMaxStamina(Stamina);
-        setArmor(Armor);
+        //setArmor(Armor);
+        dice = new Dice(100);
     }
 
     /***************************** FIGHT ****************************/

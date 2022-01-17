@@ -16,15 +16,25 @@ public class Hero extends Character
     /******************** SETTER ARMOR ITEM *******************/
     public void setArmorItem(ArmorItem name, int slot)
     {
-        if (slot < 1 || slot > MAX_ARMOR_PIECES)
+        if (slot >= 1 && slot <= MAX_ARMOR_PIECES)
         {
-
+            armor[slot] = name;
         }
-        armor[slot] = name;
     }
 
     /**************** GETTER ARMOR ITEM **************/
-    protected ArmorItem[] getArmorItem(){return armor;
+    protected ArmorItem[] getArmorItem(){return armor;}
+
+
+    /********************* GET TOTAL ARMOR *****************/
+    public float getTotalArmor (){
+        float sum = 0;
+        for (int cpt = 0; cpt < 2; cpt++){
+            if (armor[cpt] != null){
+                sum = sum + armor[cpt].getArmorValue();
+            }
+        }
+        return sum;
     }
 
     /******************* ARMOR TO STRING **********************/
@@ -33,20 +43,22 @@ public class Hero extends Character
         {
             if (armor[cpt].getName() != null)
             {
-                System.out.println(cpt  + ":" + armor[cpt].getName()  + '\t' + armor[cpt].getArmorValue());
+                return(cpt  + ":" + armor[cpt].getName()  + '\t' + armor[cpt].getArmorValue());
             }
             else
             {
-                System.out.println(cpt + ": Empty");
+                return (cpt + ": Empty");
             }
         }
+        float sum = getTotalArmor();
+        return "TOTAL : " + sum;
     }
 
     /********************* CONSTRUCTOR *************************/
 
     public Hero(String name)
     {
-        super(name, DEFAULT_STAMINA, DEFAULT_LIFE, armor);
+        super(name, DEFAULT_STAMINA, DEFAULT_LIFE);
     }
 
     public Hero()
