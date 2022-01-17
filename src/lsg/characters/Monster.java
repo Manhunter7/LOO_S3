@@ -12,7 +12,7 @@ public class Monster extends Character
 
     public Monster()
     {
-        super("Monster " +INSTANCES_COUNT, DEFAULT_STAMINA, DEFAULT_LIFE, DEFAULT_SKINTHICKNESS);
+        super("Monster " +INSTANCES_COUNT, DEFAULT_STAMINA, DEFAULT_LIFE);
         INSTANCES_COUNT ++;
     }
 }
