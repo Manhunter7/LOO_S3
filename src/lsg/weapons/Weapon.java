@@ -1,74 +1,73 @@
 package lsg.weapons;
 
 public class Weapon {
-    private String name;
-    private int minDamage;
-    private int maxDamage;
-    private int stamCost;
-    private int durability;
+	
+	protected String name ;
+	
+	private int minDamage ;
+	private int maxDamage ;
+	private int stamCost ;
+	private int durability ;
+	
+	public Weapon(String name, int minDamage, int maxDamage, int stamCost, int durability) {
+		this.name = name ;
+		this.minDamage = minDamage ;
+		this.maxDamage = maxDamage ;
+		this.stamCost = stamCost ;
+		this.durability = durability ;
+	}
+	
+	public void use(){
+		setDurability(durability-1) ; ;
+	}
+	
+	public boolean isBroken(){
+		return durability <=0 ;
+	}
+	
+	public String getName() {
+		return name;
+	}
 
+	private void setName(String name) {
+		this.name = name;
+	}
 
-    protected String getWeaponName ()
-    {
-        return this.name;
-    }
+	public int getMinDamage() {
+		return minDamage;
+	}
 
-    public int getMinDamage()
-    {
-        return this.minDamage;
-    }
-    protected void setMinDamage(int newMinDamage)
-    {
-        this.minDamage = newMinDamage;
-    }
+	private void setMinDamage(int minDamage) {
+		this.minDamage = minDamage;
+	}
 
-    public int getMaxDamage()
-    {
-        return this.maxDamage;
-    }
+	public int getMaxDamage() {
+		return maxDamage;
+	}
 
-    public int getStamCost()
-    {
-        return this.stamCost;
-    }
+	private void setMaxDamage(int maxDamage) {
+		this.maxDamage = maxDamage;
+	}
 
-    public int getDurability()
-    {
-        return this.durability;
-    }
-    public void setDurability(int newDurability)
-    {
-        this.durability = newDurability;
-    }
+	public int getStamCost() {
+		return stamCost;
+	}
 
-    /********************* CONSTRUCTOR ********************/
-    public Weapon (String name, int newMinDamage, int newMaxDamage, int newStamCost, int newDurability)
-    {
-        setDurability(newDurability);
-        this.stamCost = newStamCost;
-        this.maxDamage = newMaxDamage;
-        this.minDamage = newMinDamage;
-        this.name = name;
-    }
+	private void setStamCost(int stamCost) {
+		this.stamCost = stamCost;
+	}
 
-    private void use()
-    {
-        this.durability -= 1;
-    }
+	public int getDurability() {
+		return durability;
+	}
 
-    public boolean isBroken()
-    {
-        return (this.durability == 0);
-    }
+	private void setDurability(int durability) {
+		this.durability = durability;
+	}
+	
+	@Override
+	public String toString() {
+		return getName() + " (min:" + getMinDamage() + " max:" + getMaxDamage() + " stam:" + getStamCost() + " dur:" + getDurability() + ")" ; 
+	}
 
-    @Override
-    public String toString()
-    {
-        String strName = this.getWeaponName();
-        String strMinDamage = "( " + this.getMinDamage();
-        String strMaxDamage = " " + this.getMaxDamage();
-        String strStam = " " + this.getStamCost();
-        String strDurability = this.getDurability() + " )";
-        return String.format("%-12s %-4s %-8s %-4s %-6s", strName, strMinDamage, strMaxDamage, strStam, strDurability);
-    }
 }

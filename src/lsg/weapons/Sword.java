@@ -1,9 +1,11 @@
 package lsg.weapons;
 
 public class Sword extends Weapon {
-    public Sword ()
-    {
-        super("Basic Sword", 5, 10, 20, 100);
+	
+	private static String NAME = "Basic Sword" ;
+	
+	public Sword() {
+		super(NAME, 5, 10, 20, 100) ;
+	}
 
-    }
 }

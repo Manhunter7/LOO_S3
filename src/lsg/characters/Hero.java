@@ -1,68 +1,156 @@
 package lsg.characters;
 
-/*20.09.21
-by ManHNTR_7*/
-
 import lsg.armor.ArmorItem;
+import lsg.armor.BlackWitchVeil;
+import lsg.armor.RingedKnightArmor;
+import lsg.buffs.rings.Ring;
 
-public class Hero extends Character
-{
-    //déclaration
-    private final static int DEFAULT_LIFE = 100;
-    private final static int DEFAULT_STAMINA = 50;
-    private final static int MAX_ARMOR_PIECES = 3;
-    private ArmorItem[] armor = new ArmorItem[MAX_ARMOR_PIECES];
+public class Hero extends Character{
+	
+	private static String DEFAULT_NAME = "Gregooninator" ; // Nom par défaut
+	private static int DEFAULT_MAX_LIFE = 100 ; // Nombre de points de vie par défaut
+	private static int DEFAULT_MAX_STAMINA = 50 ; // Nombre de points d'action par défaut
+	
+	private static int MAX_ARMOR_PIECES = 3 ; // nombre max de pièces d'armures
+	
+	private static int MAX_RINGS = 2 ; // nombre max d'anneaux
+	
+	private ArmorItem[] armor ; // l'ensemble des pieces d'armure portees par le hero
+	
+	private Ring[] rings ;
+	
+	public Hero(String name){
+		super(name) ;
+		setMaxLife(DEFAULT_MAX_LIFE);
+		setLife(DEFAULT_MAX_LIFE) ;
+		setMaxStamina(DEFAULT_MAX_STAMINA);
+		setStamina(DEFAULT_MAX_STAMINA) ;
+		
+		armor = new ArmorItem[MAX_ARMOR_PIECES] ;
+		rings = new Ring[MAX_RINGS] ;
+	}
+	
+	public Hero(){
+		this(DEFAULT_NAME) ;
+	}
+	
+	/**
+	 * Place une piece d'armure
+	 * @param item : la piece d'amure 
+	 * @param slot : slot a utiliser (NB: si une piece était en place, elle est remplacee)
+	 */
+	public void setArmorItem(ArmorItem item, int slot){
+		int index = slot-1 ;
+		if(index >=0 && index < MAX_ARMOR_PIECES){
+			armor[index] = item ;
+		}
+	}
+	
+	/**
+	 * @return un tableau contenant les pièces d'armure effectivement portées
+	 */
+	public ArmorItem[] getArmorItems() {
+		
+		// Comptage du nombre de pièces portées (NB: on pourrait être plus efficace avec une Collection... cf. plus tard)
+		int count = 0 ;
+		for (ArmorItem item: armor){
+			if(item != null) count++ ;
+		}
+		
+		// Création et remplissage du tableau résultat
+		ArmorItem[] items = new ArmorItem[count] ;
+		int i = 0 ;
+		for(ArmorItem item: armor) {
+			if(item != null){
+				items[i] = item ;
+				i++ ;
+			}
+		}
+		
+		return items ;
+	}
+	
+	/**
+	 * Place un anneau
+	 * @param ring
+	 * @param slot : slot a utiliser (NB: si un anneau était en place, il est remplacee)
+	 */
+	public void setRing(Ring ring, int slot){
+		int index = slot-1 ;
+		if(index >=0 && index < MAX_RINGS){
+			rings[index] = ring ;
+			ring.setHero(this);
+		}
+	}
+	
+	public Ring[] getRings() {
+		
+		// Comptage du nombre d'anneaux (NB: on pourrait être plus efficace avec une Collection... cf. plus tard)
+		int count = 0 ;
+		for (Ring ring: rings){
+			if(ring != null) count++ ;
+		}
+		
+		// Création et remplissage du tableau résultat
+		Ring[] result = new Ring[count] ;
+		int i = 0 ;
+		for(Ring r: rings) {
+			if(r != null){
+				result[i] = r ;
+				i++ ;
+			}
+		}
+		
+		return result ;
+	}
+	
+	/**
+	 * @return la valeur totale de l'armure du hero
+	 */
+	public float getTotalArmor(){
+		float total = 0 ;
+		for(ArmorItem i : armor){
+			total = (i != null) ? total + i.getArmorValue() : total ;
+		}
+		return total ;
+	}
+		
+	/**
+	 * @return une representation de l'armure portee par le hero
+	 */
+	public String armorToString(){
+		String msg = "ARMOR " ;
+		String item ;
+		for(int i=0 ; i<MAX_ARMOR_PIECES ; i++){
+			item = (armor[i] !=null) ? armor[i].toString() : "empty" ;
+			msg = String.format("%s %2d:%-30s", msg, i+1, item) ; 
+		}
+		return msg + "TOTAL:" + getTotalArmor() ;
+	}
 
-    /******************** SETTER ARMOR ITEM *******************/
-    public void setArmorItem(ArmorItem name, int slot)
-    {
-        if (slot >= 1 && slot <= MAX_ARMOR_PIECES)
-        {
-            armor[slot] = name;
-        }
-    }
+	@Override
+	protected float computeProtection() {
+		return getTotalArmor() ;
+	}
+	
+	@Override
+	protected float computeBuff() {
+		float total = 0 ;
+		for(Ring r : rings){
+			total = (r != null) ? total + r.computeBuffValue() : total ;
+		}
+		return total ;
+	}	
+	
+	public static void main(String[] args) {
+		Hero hero = new Hero() ;
+		
+		hero.setArmorItem(new BlackWitchVeil(), 1);
+//		hero.addArmor(new DragonSlayerLeggings(), 2);
+		hero.setArmorItem(new RingedKnightArmor(), 3);
+		System.out.println(hero.armorToString());
+		
+	}
 
-    /**************** GETTER ARMOR ITEM **************/
-    protected ArmorItem[] getArmorItem(){return armor;}
-
-
-    /********************* GET TOTAL ARMOR *****************/
-    public float getTotalArmor (){
-        float sum = 0;
-        for (int cpt = 0; cpt < 2; cpt++){
-            if (armor[cpt] != null){
-                sum = sum + armor[cpt].getArmorValue();
-            }
-        }
-        return sum;
-    }
-
-    /******************* ARMOR TO STRING **********************/
-    public String armorToString() {
-        for (int cpt = 0; cpt < MAX_ARMOR_PIECES; cpt++)
-        {
-            if (armor[cpt].getName() != null)
-            {
-                return(cpt  + ":" + armor[cpt].getName()  + '\t' + armor[cpt].getArmorValue());
-            }
-            else
-            {
-                return (cpt + ": Empty");
-            }
-        }
-        float sum = getTotalArmor();
-        return "TOTAL : " + sum;
-    }
-
-    /********************* CONSTRUCTOR *************************/
-
-    public Hero(String name)
-    {
-        super(name, DEFAULT_STAMINA, DEFAULT_LIFE);
-    }
-
-    public Hero()
-    {
-        this("Koleoslip");
-    }
+	
 }
