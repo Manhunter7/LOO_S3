@@ -14,7 +14,12 @@ public abstract class Character {
 	
 	private int maxLife, life ; 		// Nombre de points de vie restants
 	private int maxStamina, stamina ;	// Nombre de points d'action restants
-	
+
+	public final static String LIFE_STAT_STRING = "life";
+	public final static String STAM_STAT_STRING = "stamina";
+	public final static String PROTECTION_STAT_STRING = "protection";
+	public final static String BUFF_STAT_STRING = "buff";
+
 	private Weapon weapon ;
 	
 	private Dice dice101 = new Dice(101) ;
@@ -75,12 +80,13 @@ public abstract class Character {
 	public String toString() {
 		
 		String classe = getClass().getSimpleName() ;
-		String life = String.format("%5d", getLife()) ; 
-		String stam = String.format("%5d", getStamina()) ; 
-		String protection = String.format(Locale.US, "%6.2f", computeProtection()) ;
-		String buff = String.format(Locale.US, "%6.2f", computeBuff()) ;
+		String life = String.format(LIFE_STAT_STRING + " : "+  getLife()) ;
+		String stam = String.format(STAM_STAT_STRING + " : " + getStamina()) ;
+		String protection = String.format(Locale.US, PROTECTION_STAT_STRING + " : " + computeProtection()) ;
+		String buff = String.format(Locale.US, BUFF_STAT_STRING + " : "  + computeBuff()) ;
 		
-		String msg = String.format("%-20s %-20s LIFE:%-10s STAMINA:%-10s PROTECTION:%-10s BUFF:%-10s", "[ " + classe + " ]", getName(), life, stam, protection, buff) ;
+		String msg = String.format("%-20s %-20s %-18s %-21s %-23s %-17s", "[ " + classe + " ]", getName(), life, stam, protection, buff) ;
+		/* nouvelle verison du msg */
 		
 		String status ;
 		if(isAlive()){
