@@ -1,9 +1,9 @@
 package lsg.consumables.drinks;
 
-import lsg.consumables.Consumable;
+import lsg.consumables.drinks.Drink;
 
-public class Coffee extends Consumable {
+public class Coffee extends Drink {
     public Coffee (){
-        super ("'Hot Grandmother Coffee", 10, "stamina");
+        super ("'Hot Grandmother Coffee", 10);
     }
 }

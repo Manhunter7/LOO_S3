@@ -1,9 +1,7 @@
 package lsg.consumables.drinks;
 
-import lsg.consumables.Consumable;
-
-public class Wine extends Consumable {
+public class Wine extends Drink {
     public Wine(){
-        super("Pomerol 2008", 30, "stamina");
+        super("Pomerol 2008", 30);
     }
 }
