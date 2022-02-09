@@ -2,7 +2,7 @@ package lsg.buffs.rings;
 
 import lsg.characters.Hero;
 
-public class RingOfDeath extends Ring{
+public class RingOfDeath extends Ring {
 	
 	private static float LIMIT = 0.5f ; 
 

@@ -1,11 +1,23 @@
 package lsg.characters;
 
-import java.util.Locale;
-
+import lsg.consumables.Consumable;
+import lsg.consumables.drinks.Drink;
+import lsg.consumables.food.Food;
+import lsg.consumables.repair.RepairKit;
 import lsg.helper.Dice;
+import lsg.bags.Bag;
+import lsg.bags.Collectible;
+import lsg.bags.SmallBag;
 import lsg.weapons.Weapon;
 
+import java.util.Locale;
+
 public abstract class Character {
+
+	public static final String LIFE_STAT_STRING = "life" ;
+	public static final String STAM_STAT_STRING = "stamina" ;
+	public static final String PROTECTION_STAT_STRING = "protection" ;
+	public static final String BUFF_STAT_STRING = "buff" ;
 
 	private static String MSG_ALIVE = "(ALIVE)" ;
 	private static String MSG_DEAD = "(DEAD)" ;
@@ -14,20 +26,198 @@ public abstract class Character {
 	
 	private int maxLife, life ; 		// Nombre de points de vie restants
 	private int maxStamina, stamina ;	// Nombre de points d'action restants
-
-	public final static String LIFE_STAT_STRING = "life";
-	public final static String STAM_STAT_STRING = "stamina";
-	public final static String PROTECTION_STAT_STRING = "protection";
-	public final static String BUFF_STAT_STRING = "buff";
-
-	private Weapon weapon ;
 	
+	private Weapon weapon ;
+
+	private Consumable consumable ;
+
+	protected Bag bag ;
+
 	private Dice dice101 = new Dice(101) ;
 	
 	public Character(String name) {
 		this.name = name ;
+		bag = new SmallBag() ;
 	}
-	
+
+	/**
+	 * @return la capacite du sac équipé
+	 */
+	public int getBagCapacity(){
+		return bag.getCapacity() ;
+	}
+
+	/**
+	 * @return le poids total courant du sac equipe
+	 */
+	public int getBagWeight(){
+		return bag.getWeight() ;
+	}
+
+	/**
+	 * @return un tableau contenant les Collectible du sac équipé
+	 */
+	public Collectible[] getBagItems(){
+		return bag.getItems() ;
+	}
+
+	/**
+	 * Ajoute un item dans le sac s'il n'est pas plein
+	 * @param item
+	 */
+	public void pickUp(Collectible item){
+		System.out.print(name + " picks up " + item);
+		bag.push(item);
+	}
+
+	/**
+	 * Retire un item du sac s'il y était
+	 * @param item : item à retirer
+	 * @return l'item retiré ; null si l'item n'était pas dans le sac
+	 */
+	public Collectible pullOut(Collectible item){
+		System.out.print(name + " pulls out " + item);
+		return bag.pop(item) ;
+	}
+
+	/**
+	 * Change le sac du personnage, en transférant (ce qu'il est possible) dans le nouveau sac.
+	 * @param newBag : le nouveau sac contenant les items transférés
+	 * @return l'ancien sac avec les items qui n'ont pas pu être transféré
+	 */
+	public Bag setBag(Bag newBag){
+		System.out.println(name + " changes " + bag.getClass().getSimpleName() + " for " + newBag.getClass().getSimpleName());
+		Bag oldBag = bag ;
+		Bag.transfer(oldBag, newBag);
+		bag = newBag ;
+		return oldBag ;
+	}
+
+	/**
+	 * Recherche le consommable passé en paramètre dans le sac, et l'équipe (donc le retire du sac)
+	 * Ne fait rien si le consommable n'est pas dans le sac
+	 * @param consumable
+	 */
+	public void equip(Consumable consumable){
+		if(consumable == null) return ;
+		if(bag.contains(consumable)){
+			pullOut(consumable) ;
+			System.out.println(" and equips it !");
+			setConsumable(consumable);
+		}
+	}
+
+	/**
+	 * Recherche l'arme passée en paramètre dans le sac, et l'équipe (donc la retire du sac)
+	 * Ne fait rien si l'arme n'est pas dans le sac
+	 * @param weapon
+	 */
+	public void equip(Weapon weapon){
+		if(weapon == null) return ;
+		if(bag.contains(weapon)){
+			pullOut(weapon) ;
+			System.out.println(" and equips it !");
+			setWeapon(weapon);
+		}
+	}
+
+	public Consumable getConsumable() {
+		return consumable;
+	}
+
+	/**
+	 * Methode qui utilise le consommable equipé par le personnage
+	 */
+	public void consume(){
+		use(consumable);
+	}
+
+	public void setConsumable(Consumable consumable) {
+		this.consumable = consumable;
+	}
+
+	private void eat(Food food){
+		if(food == null) return ;
+		System.out.println(getName() + " eats " + food);
+		int newLife = getLife() + food.use() ;
+		newLife = (newLife < maxLife) ? newLife : maxLife ;
+		setLife(newLife);
+	}
+
+	private void drink(Drink drink){
+		if(drink == null) return ;
+		System.out.println(getName() + " drinks " + drink);
+		int newStam = getStamina() + drink.use() ;
+		newStam = (newStam < maxStamina) ? newStam : maxStamina ;
+		setStamina(newStam);
+	}
+
+	private void repairWeaponWith(RepairKit kit){
+		if(weapon ==null) return ;
+		System.out.println(getName() + " repairs " + weapon + " with " + kit);
+		weapon.repairWith(kit);
+	}
+
+	public void use(Consumable consumable){
+		if(consumable instanceof Drink){
+			drink((Drink)consumable);
+		}else if(consumable instanceof Food){
+			eat((Food)consumable) ;
+		}else if(consumable instanceof RepairKit){
+			repairWeaponWith((RepairKit)consumable);
+		}
+	}
+
+	/**
+	 * Methode qui consomme le premier item du sac qui est instance de la classe passée en paramètre.
+	 * Consommer signifie utiliser puis retirer du sac s'il est vide (getCapacity() vaut 0)
+	 * @param type : la classe de l'objet recherché
+	 * @return : le premier objet de la classe type trouvé ; null si le sac ne contient pas d'objet de cette classe
+	 */
+	private Consumable fastUseFirst(Class<? extends Consumable> type){
+		if(type == null) return null ;
+		Consumable found = null ;
+		Collectible[] items = getBagItems() ;
+		for(Collectible item: items){
+			if(type.isInstance(item)){
+				found = (Consumable)item ;
+				break;
+			}
+		}
+		if(found != null){
+			use(found) ;
+			if(found.getCapacity() == 0) pullOut(found) ;
+		}
+		return found ;
+	}
+
+	/**
+	 * Le personnage boit la première boisson trouvée dans le sac, puis jette l'objet
+	 * Ne fait rien si le sac ne contient pas de boisson
+	 */
+	public Drink fastDrink(){
+		System.out.println(name + " drinks FAST :");
+		return (Drink) fastUseFirst(Drink.class) ;
+	}
+
+	/**
+	 * Le personnage mange la première nourriture trouvée dans le sac, puis jette l'objet
+	 * Ne fait rien si le sac ne contient pas de nourriture
+	 */
+	public Food fastEat(){
+		System.out.println(name + " eats FAST :");
+		return (Food) fastUseFirst(Food.class) ;
+	}
+
+	/**
+	 * Le personnage mange la première nourriture trouvée dans le sac, puis jette l'objet
+	 * Ne fait rien si le sac ne contient pas de nourriture
+	 */
+	public RepairKit fastRepair(){
+		System.out.println(name + " repairs FAST :");
+		return (RepairKit) fastUseFirst(RepairKit.class);
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -75,18 +265,34 @@ public abstract class Character {
 	public void printStats(){
 		System.out.println(this);
 	}
-	
+
+	public void printBag(){
+		System.out.print("BAG : " + bag);
+	}
+
+	public void printWeapon(){
+		System.out.println("WEAPON : " + weapon);
+	}
+
 	@Override
 	public String toString() {
 		
 		String classe = getClass().getSimpleName() ;
-		String life = String.format(LIFE_STAT_STRING + " : "+  getLife()) ;
-		String stam = String.format(STAM_STAT_STRING + " : " + getStamina()) ;
-		String protection = String.format(Locale.US, PROTECTION_STAT_STRING + " : " + computeProtection()) ;
-		String buff = String.format(Locale.US, BUFF_STAT_STRING + " : "  + computeBuff()) ;
+		String life = String.format("%5d", getLife()) ; 
+		String stam = String.format("%5d", getStamina()) ; 
+		String protection = String.format(Locale.US, "%6.2f", computeProtection()) ;
+		String buff = String.format(Locale.US, "%6.2f", computeBuff()) ;
 		
-		String msg = String.format("%-20s %-20s %-18s %-21s %-23s %-17s", "[ " + classe + " ]", getName(), life, stam, protection, buff) ;
-		/* nouvelle verison du msg */
+		String msg = String.format("%-20s %-20s %s:%-10s %s:%-10s %s:%-10s %s:%-10s", "[ " + classe + " ]",
+				getName(),
+				LIFE_STAT_STRING.toUpperCase(),
+				life,
+				STAM_STAT_STRING.toUpperCase(),
+				stam,
+				PROTECTION_STAT_STRING.toUpperCase(),
+				protection,
+				BUFF_STAT_STRING.toUpperCase(),
+				buff) ;
 		
 		String status ;
 		if(isAlive()){

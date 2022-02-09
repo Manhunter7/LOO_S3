@@ -5,7 +5,7 @@ import lsg.armor.BlackWitchVeil;
 import lsg.armor.RingedKnightArmor;
 import lsg.buffs.rings.Ring;
 
-public class Hero extends Character{
+public class Hero extends Character {
 	
 	private static String DEFAULT_NAME = "Gregooninator" ; // Nom par défaut
 	private static int DEFAULT_MAX_LIFE = 100 ; // Nombre de points de vie par défaut
@@ -33,7 +33,36 @@ public class Hero extends Character{
 	public Hero(){
 		this(DEFAULT_NAME) ;
 	}
-	
+
+	/**
+	 * Recherche l'item d'armure passée en paramètre dans le sac, et l'équipe (donc le retire du sac)
+	 * Ne fait rien si l'item n'est pas dans le sac
+	 * @param item
+	 */
+	public void equip(ArmorItem item, int slot){
+		if(item==null) return ;
+
+		if(bag.contains(item)){
+			pullOut(item) ;
+			System.out.println(" and equips it !");
+			setArmorItem(item, slot);
+		}
+	}
+
+	/**
+	 * Recherche l'anneau passée en paramètre dans le sac, et l'équipe (donc le retire du sac)
+	 * Ne fait rien si l'anneau n'est pas dans le sacs
+	 * @param item
+	 */
+	public void equip(Ring item, int slot){
+		if(item==null) return ;
+		if(bag.contains(item)){
+			pullOut(item) ;
+			System.out.println(" and equips it !");
+			setRing(item, slot);
+		}
+	}
+
 	/**
 	 * Place une piece d'armure
 	 * @param item : la piece d'amure 
@@ -126,6 +155,10 @@ public class Hero extends Character{
 			msg = String.format("%s %2d:%-30s", msg, i+1, item) ; 
 		}
 		return msg + "TOTAL:" + getTotalArmor() ;
+	}
+
+	public void printArmor(){
+		System.out.println(armorToString());
 	}
 
 	@Override

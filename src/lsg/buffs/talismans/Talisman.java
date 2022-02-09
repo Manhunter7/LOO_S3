@@ -1,8 +1,8 @@
 package lsg.buffs.talismans;
 
-import java.util.Calendar;
-
 import lsg.buffs.BuffItem;
+
+import java.util.Calendar;
 
 public class Talisman extends BuffItem {
 	

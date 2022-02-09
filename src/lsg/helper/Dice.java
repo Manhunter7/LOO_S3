@@ -32,7 +32,7 @@ public class Dice {
 	}
 
 	/**
-	 * Test de la classe Dice
+	 * MenuBestOfV1 de la classe Dice
 	 * 
 	 * @param args : non utilisés
 	 */

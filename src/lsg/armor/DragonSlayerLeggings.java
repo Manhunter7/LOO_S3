@@ -8,5 +8,9 @@ public class DragonSlayerLeggings extends ArmorItem {
 	public DragonSlayerLeggings() {
 		super(ARMOR_NAME, ARMOR_VALUE) ;
 	}
-	
+
+	@Override
+	public int getWeight() {
+		return 3 ;
+	}
 }

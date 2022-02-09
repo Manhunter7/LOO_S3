@@ -2,7 +2,7 @@ package lsg.characters;
 
 import lsg.buffs.talismans.Talisman;
 
-public class Monster extends Character{
+public class Monster extends Character {
 	
 	private static int INSTANCES_COUNT = 0 ;
 	

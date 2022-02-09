@@ -1,6 +1,11 @@
 package lsg.weapons;
 
-public class Weapon {
+import lsg.consumables.repair.RepairKit;
+import lsg.bags.Collectible;
+
+public class Weapon implements Collectible{
+
+	public static final String DURABILITY_STAT_STRING = "durability" ;
 	
 	protected String name ;
 	
@@ -8,11 +13,6 @@ public class Weapon {
 	private int maxDamage ;
 	private int stamCost ;
 	private int durability ;
-
-	public final static String MIN_STAT_STRING = "min";
-	public final static String MAX_STAT_STRING = "max";
-	public final static String STAM_STAT_STRING = "stam";
-	public final static String DURABILITY_STAT_STRING = "durability";
 	
 	public Weapon(String name, int minDamage, int maxDamage, int stamCost, int durability) {
 		this.name = name ;
@@ -21,7 +21,16 @@ public class Weapon {
 		this.stamCost = stamCost ;
 		this.durability = durability ;
 	}
-	
+
+	@Override
+	public int getWeight() {
+		return 2 ;
+	}
+
+	public void repairWith(RepairKit kit){
+		setDurability(durability + kit.use());
+	}
+
 	public void use(){
 		setDurability(durability-1) ; ;
 	}
@@ -72,7 +81,7 @@ public class Weapon {
 	
 	@Override
 	public String toString() {
-		return getName() + " (" + MIN_STAT_STRING + ":" + getMinDamage() + " " + MAX_STAT_STRING + ":" + getMaxDamage() +" " + STAM_STAT_STRING + ":" + getStamCost() + " " + DURABILITY_STAT_STRING + ":" + getDurability() + ")" ;
+		return getName() + " (min:" + getMinDamage() + " max:" + getMaxDamage() + " stam:" + getStamCost() + " " + DURABILITY_STAT_STRING.substring(0,3) + ":" + getDurability() + ")" ;
 	}
 
 }

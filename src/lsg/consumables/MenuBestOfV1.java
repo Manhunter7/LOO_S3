@@ -6,24 +6,32 @@ import lsg.consumables.drinks.Wine;
 import lsg.consumables.food.Americain;
 import lsg.consumables.food.Hamburger;
 
-import java.util.LinkedHashSet;
+public class MenuBestOfV1 {
 
-public class MenuBestOfV1 extends LinkedHashSet<Consumable> {
+    Consumable[] menu ;
 
     public MenuBestOfV1(){
-        this.add(new Coffee());
-        this.add(new Whisky());
-        this.add(new Wine());
-        this.add(new Americain());
-        this.add(new Hamburger());
+        menu = new Consumable[5] ;
+        menu[0] = new Hamburger() ;
+        menu[1] = new Wine() ;
+        menu[2] = new Americain() ;
+        menu[3] = new Coffee() ;
+        menu[4] = new Whisky() ;
     }
 
     @Override
-    public String toString(){
-        String rtn = "MenuBestOfV1 \n";
-        for (Consumable c: this){
-            rtn += c + " : " + c.getName() + " [" + c.getCapacity() + " " + c.getStat() + "point(s) ] \n";
+    public String toString() {
+        String description = getClass().getSimpleName() + " : \n" ;
+        int i = 1 ;
+        for(Consumable c : menu){
+            description += i + " : " + c.toString() + "\n" ;
+            i++ ;
         }
-        return rtn;
+        return description ;
     }
+
+    public static void main(String[] args) {
+        System.out.println(new MenuBestOfV1());
+    }
+
 }

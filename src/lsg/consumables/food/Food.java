@@ -1,12 +1,12 @@
 package lsg.consumables.food;
 
+import lsg.characters.Character;
 import lsg.consumables.Consumable;
 
-public class Food extends Consumable {
-
-    public static String STAT = "life";
+public class Food extends Consumable{
 
     public Food(String name, int capacity){
-        super (name, capacity, STAT);
+        super(name, capacity, Character.LIFE_STAT_STRING);
     }
+
 }
