@@ -33,99 +33,6 @@ public class LearningSoulsGame {
 	Hero hero ;
 	Monster monster ;
 
-	private void createExhaustedHero(){
-		System.out.println("Create exhausted hero : ");
-		hero = new Hero() ;
-
-		// pour vider la vie
-		hero.getHitWith(99) ;
-
-		// pour depenser la stam
-		hero.setWeapon(new Weapon("Grosse Arme", 0, 0, 1000, 100));
-		hero.attack() ;
-//		hero.setWeapon(null);
-
-		System.out.println(hero);
-//		System.out.println(hero.getWeapon());
-
-	}
-
-	private void aTable() {
-		MenuBestOfV4 menu = new MenuBestOfV4();
-		for (Consumable c : menu) {
-			System.out.println();
-			hero.use(c);
-			System.out.println(hero);
-			System.out.println("Apres utilisation : " + c);
-		}
-		System.out.println(hero.getWeapon());
-	}
-
-	private void testBag(){
-		ArmorItem armor1 = new DragonSlayerLeggings() ;
-		hero.pickUp(armor1);
-		System.out.println();
-		hero.pickUp(new RingedKnightArmor());
-		System.out.println();
-
-		Weapon weapon = new ShotGun() ;
-		hero.pickUp(weapon);
-		System.out.println();
-
-		System.out.println();
-		hero.printBag();
-
-		System.out.println();
-		hero.setBag(new MediumBag());
-		System.out.println();
-		hero.printBag();
-
-		System.out.println();
-		hero.pickUp(new Coffee());
-		System.out.println();
-		hero.pickUp(new Hamburger());
-		System.out.println();
-		hero.pickUp(new Whisky());
-		System.out.println();
-		hero.pickUp(new RepairKit());
-		System.out.println();
-		hero.pickUp(new RepairKit());
-		System.out.println();
-
-		System.out.println();
-		hero.printBag();
-
-		System.out.println() ;
-		System.out.println("--- AVANT ---");
-		hero.printStats();
-		hero.printArmor();
-		hero.printWeapon();
-		hero.printBag();
-
-		System.out.println();
-		System.out.println("--- ACTIONS ---");
-		hero.fastDrink();
-		System.out.println();
-		System.out.println();
-		hero.fastEat();
-		System.out.println();
-		System.out.println();
-
-		hero.equip(weapon);
-		System.out.println();
-		hero.equip(armor1, 1);
-		System.out.println();
-		hero.fastRepair();
-
-		System.out.println();
-		System.out.println("--- APRES ---");
-		hero.printStats();
-		hero.printArmor();
-		hero.printWeapon();
-		hero.printBag();
-
-	}
-
 	private void init(){
 		hero = new Hero() ;
 		hero.setWeapon(new Sword());
@@ -200,23 +107,10 @@ public class LearningSoulsGame {
 		monster.printStats();
 	}
 
-	private void title(){
-		System.out.println();
-		System.out.println("###############################");
-		System.out.println("#   THE LEARNING SOULS GAME   #");
-		System.out.println("###############################");
-		System.out.println();
-	}
-
 	public static void main(String[] args) {
 		LearningSoulsGame lsg = new LearningSoulsGame() ;
-		lsg.title();
-		lsg.createExhaustedHero();
 		System.out.println();
-//		lsg.aTable();
-//		lsg.init();
-//		lsg.fight1v1();
-		lsg.testBag();
+		lsg.init();
+		lsg.play();
 	}
-
 }
