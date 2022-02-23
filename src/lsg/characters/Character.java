@@ -4,12 +4,14 @@ import lsg.consumables.Consumable;
 import lsg.consumables.drinks.Drink;
 import lsg.consumables.food.Food;
 import lsg.consumables.repair.RepairKit;
+import lsg.exceptions.WeaponNullException;
 import lsg.helper.Dice;
 import lsg.bags.Bag;
 import lsg.bags.Collectible;
 import lsg.bags.SmallBag;
 import lsg.weapons.Weapon;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public abstract class Character {
@@ -92,6 +94,9 @@ public abstract class Character {
 		bag = newBag ;
 		return oldBag ;
 	}
+	public Bag getBag(){
+		return this.bag;
+	}
 
 	/**
 	 * Recherche le consommable passé en paramètre dans le sac, et l'équipe (donc le retire du sac)
@@ -152,8 +157,8 @@ public abstract class Character {
 		setStamina(newStam);
 	}
 
-	private void repairWeaponWith(RepairKit kit){
-		if(weapon ==null) return ;
+	private void repairWeaponWith(RepairKit kit) throws WeaponNullException {
+		if(weapon ==null) throw new WeaponNullException() ;
 		System.out.println(getName() + " repairs " + weapon + " with " + kit);
 		weapon.repairWith(kit);
 	}
@@ -164,7 +169,11 @@ public abstract class Character {
 		}else if(consumable instanceof Food){
 			eat((Food)consumable) ;
 		}else if(consumable instanceof RepairKit){
-			repairWeaponWith((RepairKit)consumable);
+			try {
+				repairWeaponWith((RepairKit) consumable);
+			}catch(WeaponNullException e){
+				System.out.println("USE WARNING:" + '\t' + e);
+			}
 		}
 	}
 
@@ -304,7 +313,10 @@ public abstract class Character {
 		return msg + status ;
 	}
 	
-	public int attack(){
+	public int attack() throws WeaponNullException{
+		if(this.getWeapon() == null){
+			throw new WeaponNullException();
+		}
 		return attackWith(this.getWeapon()) ;
 	}
 	
@@ -315,7 +327,11 @@ public abstract class Character {
 	 * @param weapon : l'arme utilisée.
 	 * @return la valeur de l'attaque eventuellement buffée ; 0 si l'arme est cassée.
 	 */
-	protected int attackWith(Weapon weapon){
+	protected int attackWith(Weapon weapon) throws WeaponNullException{
+		if (weapon == null){
+			throw new WeaponNullException();
+		}
+
 		int min = weapon.getMinDamage() ;
 		int max = weapon.getMaxDamage() ;
 		int cost = weapon.getStamCost() ;
@@ -334,8 +350,7 @@ public abstract class Character {
 			
 			weapon.use();
 		}
-		
-		return attack + Math.round(attack*computeBuff()/100);
+			return attack + Math.round(attack * computeBuff() / 100);
 	}
 	
 	public Weapon getWeapon() {
@@ -371,7 +386,9 @@ public abstract class Character {
 		dmg = (life > value) ? value : life ; 
 		setLife(life-dmg);
 		return dmg ;
-				
 	}
-	
+
+	public void printConsumable(){
+		System.out.println("CONSUMABLE:" + '\t' + this.getConsumable());
+	}
 }

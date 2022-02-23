@@ -173,8 +173,18 @@ public class Hero extends Character {
 			total = (r != null) ? total + r.computeBuffValue() : total ;
 		}
 		return total ;
-	}	
-	
+	}
+
+	public String printRings(){
+		String out = "RINGS \t";
+		int a = 1;
+		for (Ring ring: rings){
+			out +="\t" + a + ":[" + ring.getRingName() + ", " + ring.getRingBuff() + "]\t";
+			a++;
+		}
+		return out;
+	}
+
 	public static void main(String[] args) {
 		Hero hero = new Hero() ;
 		
@@ -184,6 +194,4 @@ public class Hero extends Character {
 		System.out.println(hero.armorToString());
 		
 	}
-
-	
 }
