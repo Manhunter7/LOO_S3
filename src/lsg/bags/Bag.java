@@ -3,6 +3,7 @@ package lsg.bags;
 import lsg.LearningSoulsGame;
 import lsg.armor.DragonSlayerLeggings;
 import lsg.armor.RingedKnightArmor;
+import lsg.exceptions.BagFullException;
 import lsg.weapons.ShotGun;
 
 import java.util.HashSet;
@@ -36,13 +37,14 @@ public class Bag {
      * Permet d'ajouter un Collectible dans le Bag s'il y reste assez de place.
      * S'il n'y a pas assez de place, la méthode ne fait rien.
      * @param item : le Collectible à ranger
+     * @throws BagFullException
      */
-    public void push(Collectible item){
+    public void push(Collectible item) throws BagFullException {
         int weight = item.getWeight() ;
         if(this.weight + weight <= capacity){
             items.add(item) ;
             this.weight += weight ;
-        }
+        }else throw new BagFullException(this) ;
     }
 
     /**
@@ -103,34 +105,39 @@ public class Bag {
      * @param into le sac qui doit être rempli
      */
     public static void transfer(Bag from, Bag into){
+        if(from == null || into == null) return ;
         int size = into.getCapacity() ;
         Collectible[] items = from.getItems() ;
         for(Collectible item: items){
-            if(item.getWeight() <= (size - into.getWeight())){
+            try{
                 into.push(from.pop(item));
-            }
+            }catch(BagFullException e){}
         }
     }
 
     public static void main(String[] args) {
-        System.out.println();
-        Bag bag = new Bag(10) ;
-        bag.push(new RingedKnightArmor());
-        bag.push(new DragonSlayerLeggings());
-        bag.push(new ShotGun());
-        System.out.println("Sac 1 :");
-        System.out.println(bag);
+        try {
+            System.out.println();
+            Bag bag = new Bag(10);
+            bag.push(new RingedKnightArmor());
+            bag.push(new DragonSlayerLeggings());
+            bag.push(new ShotGun());
+            System.out.println("Sac 1 :");
+            System.out.println(bag);
 
-        Bag newBag = new Bag(5) ;
-        System.out.println("Sac 2 :");
-        System.out.println(newBag);
-        transfer(bag, newBag);
-        System.out.println();
-        System.out.println("Sac 2 après transfert :");
-        System.out.println(newBag);
+            Bag newBag = new Bag(5);
+            System.out.println("Sac 2 :");
+            System.out.println(newBag);
+            transfer(bag, newBag);
+            System.out.println();
+            System.out.println("Sac 2 après transfert :");
+            System.out.println(newBag);
 
-        System.out.println("Sac 1 après transfert :");
-        System.out.println(bag);
+            System.out.println("Sac 1 après transfert :");
+            System.out.println(bag);
+        }catch (BagFullException e){
+            e.printStackTrace();
+        }
     }
 
 }

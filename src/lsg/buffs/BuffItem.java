@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public abstract class BuffItem implements Collectible{
 	
-	public String name ;
+	private String name ; 
 	
 	public BuffItem(String name) {
 		this.name = name ;

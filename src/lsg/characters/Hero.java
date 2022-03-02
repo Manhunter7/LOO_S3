@@ -4,6 +4,7 @@ import lsg.armor.ArmorItem;
 import lsg.armor.BlackWitchVeil;
 import lsg.armor.RingedKnightArmor;
 import lsg.buffs.rings.Ring;
+import lsg.exceptions.BagNullException;
 
 public class Hero extends Character {
 	
@@ -38,10 +39,11 @@ public class Hero extends Character {
 	 * Recherche l'item d'armure passée en paramètre dans le sac, et l'équipe (donc le retire du sac)
 	 * Ne fait rien si l'item n'est pas dans le sac
 	 * @param item
+	 * @throws BagNullException
 	 */
-	public void equip(ArmorItem item, int slot){
+	public void equip(ArmorItem item, int slot) throws BagNullException {
 		if(item==null) return ;
-
+		if(bag == null) throw new BagNullException() ;
 		if(bag.contains(item)){
 			pullOut(item) ;
 			System.out.println(" and equips it !");
@@ -53,9 +55,11 @@ public class Hero extends Character {
 	 * Recherche l'anneau passée en paramètre dans le sac, et l'équipe (donc le retire du sac)
 	 * Ne fait rien si l'anneau n'est pas dans le sacs
 	 * @param item
+	 * @throws BagNullException
 	 */
-	public void equip(Ring item, int slot){
+	public void equip(Ring item, int slot) throws BagNullException {
 		if(item==null) return ;
+		if(bag == null) throw new BagNullException() ;
 		if(bag.contains(item)){
 			pullOut(item) ;
 			System.out.println(" and equips it !");
@@ -161,6 +165,16 @@ public class Hero extends Character {
 		System.out.println(armorToString());
 	}
 
+	public void printRings(){
+		String msg = "RINGS " ;
+		String ring ;
+		for(int i=0 ; i<MAX_RINGS ; i++){
+			ring = (rings[i] !=null) ? rings[i].toString() : "empty" ;
+			msg = String.format("%s %2d:%-30s", msg, i+1, ring) ;
+		}
+		System.out.println(msg);
+	}
+
 	@Override
 	protected float computeProtection() {
 		return getTotalArmor() ;
@@ -173,18 +187,8 @@ public class Hero extends Character {
 			total = (r != null) ? total + r.computeBuffValue() : total ;
 		}
 		return total ;
-	}
-
-	public String printRings(){
-		String out = "RINGS \t";
-		int a = 1;
-		for (Ring ring: rings){
-			out +="\t" + a + ":[" + ring.getRingName() + ", " + ring.getRingBuff() + "]\t";
-			a++;
-		}
-		return out;
-	}
-
+	}	
+	
 	public static void main(String[] args) {
 		Hero hero = new Hero() ;
 		
@@ -194,4 +198,6 @@ public class Hero extends Character {
 		System.out.println(hero.armorToString());
 		
 	}
+
+	
 }

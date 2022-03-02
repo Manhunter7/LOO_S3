@@ -2,9 +2,9 @@
 package lsg;
 
 import lsg.armor.ArmorItem;
+import lsg.armor.BlackWitchVeil;
 import lsg.armor.DragonSlayerLeggings;
 import lsg.armor.RingedKnightArmor;
-import lsg.bags.Bag;
 import lsg.buffs.rings.DragonSlayerRing;
 import lsg.buffs.rings.RingOfDeath;
 import lsg.buffs.talismans.MoonStone;
@@ -19,13 +19,11 @@ import lsg.consumables.drinks.Whisky;
 import lsg.consumables.food.Hamburger;
 import lsg.consumables.repair.RepairKit;
 import lsg.bags.MediumBag;
-import lsg.weapons.GrosseArme;
+import lsg.exceptions.*;
 import lsg.weapons.ShotGun;
 import lsg.weapons.Sword;
 import lsg.weapons.Weapon;
-import lsg.exceptions.WeaponNullException;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.Scanner;
 
 public class LearningSoulsGame {
@@ -36,6 +34,29 @@ public class LearningSoulsGame {
 	
 	Hero hero ;
 	Monster monster ;
+
+	private void createExhaustedHero(){
+		System.out.println("Create exhausted hero : ");
+		hero = new Hero() ;
+
+		// pour vider la vie
+		hero.getHitWith(99) ;
+
+		// pour depenser la stam
+		hero.setWeapon(new Weapon("Grosse Arme", 0, 0, 1000, 100));
+		try {
+			hero.attack() ;
+		} catch (WeaponNullException e) {
+			e.printStackTrace();
+		} catch (WeaponBrokenException e) {
+			e.printStackTrace();
+		} catch (StaminaEmptyException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(hero);
+
+	}
 
 	private void init(){
 		hero = new Hero() ;
@@ -48,24 +69,21 @@ public class LearningSoulsGame {
 
 		monster = new Lycanthrope() ; // plus besoin de donner la skin et l'arme !
 		monster.setTalisman(new MoonStone());
-
-		refresh();
 	}
 
-	private void play() throws WeaponNullException {
+	private void play(){
 		init();
 		fight1v1();
 	}
-
-	private void fight1v1() throws WeaponNullException{
+	
+	private void fight1v1(){
 
 		refresh();
-
+		
 		Character agressor = hero ;
 		Character target = monster ;
 		int action ; // TODO sera effectivement utilise dans une autre version
-		int attack=0;
-		int hit = 0 ;
+		int attack, hit ;
 		Character tmp ;
 
 		while(hero.isAlive() && monster.isAlive()){ // ATTENTION : boucle infinie si 0 stamina...
@@ -82,66 +100,106 @@ public class LearningSoulsGame {
 			}
 
 			if(action == 2){
-				hero.consume();
+				try {
+					hero.consume();
+				} catch (ConsumeNullException e) {
+					System.out.println("IMPOSSIBLE ACTION : no consumable has been equiped !");
+				} catch (ConsumeEmptyException e) {
+					System.out.println("ACTION HAS NO EFFECT: " + e.getConsumable().getName() + " is empty !");
+				} catch (ConsumeRepairNullWeaponException e) {
+					System.out.println("IMPOSSIBLE ACTION : no weapon has been equiped !");
+				}
 				System.out.println();
 			}else{
-				try{
-					attack = agressor.attack();
-					hit=target.getHitWith(attack);
-				} catch(Exception e){
-					System.out.println("WARING:" + '\t' + e);
-					attack=0;
-					hit=0;
-				} finally {
-					System.out.printf("%s attacks %s with %s (ATTACK:%d | DMG : %d)", agressor.getName(), target.getName(), agressor.getWeapon(), attack, hit);
-					System.out.println();
-					System.out.println();
+				try {
+					attack = agressor.attack() ;
+				} catch (WeaponNullException e) {
+					System.out.println("WARNING : no weapon has been equiped !!!\n");
+					attack = 0 ;
+				} catch (WeaponBrokenException e) {
+					System.out.println("WARNING : " + e.getMessage() + "\n");
+					attack = 0 ;
+				} catch (StaminaEmptyException e) {
+					System.out.println("ACTION HAS NO EFFECT: no more stamina !!!\n");
+					attack = 0 ;
 				}
+				hit = target.getHitWith(attack);
+				System.out.printf("%s attacks %s with %s (ATTACK:%d | DMG : %d)", agressor.getName(), target.getName(), agressor.getWeapon(), attack, hit);
+				System.out.println();
+				System.out.println();
 			}
 
 			refresh();
-
+			
 			tmp = agressor ;
 			agressor = target ;
 			target = tmp ;
-
+			
 		}
-
+		
 		Character winner = (hero.isAlive()) ? hero : monster ;
 		System.out.println();
 		System.out.println("--- " + winner.getName() + " WINS !!! ---");
-
+		
 	}
 	
 	private void refresh(){
 		hero.printStats();
-		System.out.println(BULLET_POINT  + hero.armorToString());
-		System.out.println(BULLET_POINT + hero.printRings());
-		System.out.println(BULLET_POINT +"CONSUMABELE : \t" + hero.getConsumable());
-		System.out.println(BULLET_POINT + "WEAPON: \t" + hero.getWeapon()) ;
-		System.out.println(BULLET_POINT + hero.getBag());
+		hero.printArmor();
+		hero.printRings();
+		hero.printConsumable();
+		hero.printWeapon();
+		hero.printBag();
+
 		System.out.println();
+		System.out.println();
+
 		monster.printStats();
-		System.out.println(monster.getWeapon());
+		monster.printWeapon();
 	}
 
-	public void testExceptions() throws WeaponNullException {
-		hero.setWeapon(null);
-		fight1v1();
-	}
-
-	public static void main(String[] args) throws WeaponNullException {
-		LearningSoulsGame lsg = new LearningSoulsGame() ;
+	private void title(){
 		System.out.println();
-		lsg.init();
-		lsg.testExceptions();
-		lsg.play();
+		System.out.println("###############################");
+		System.out.println("#   THE LEARNING SOULS GAME   #");
+		System.out.println("###############################");
+		System.out.println();
 	}
 
-	public void createExhaustedHero(){
-		Hero hero = new Hero();
-		hero.getHitWith(99);
-		hero.setWeapon(new GrosseArme());
+	private void testExceptions(){
+//		hero.setWeapon(null);
+//		hero.setConsumable(null);
+//		hero.setConsumable(new RepairKit());
+
+//		refresh();
+//		System.out.println();
+//		hero.setBag(null) ;
+//		System.out.println();
+//		try {
+//			System.out.println();
+//			hero.pickUp(new RingedKnightArmor());
+//			System.out.println();
+//			hero.pickUp(new BlackWitchVeil());
+//			System.out.println();
+//			hero.pickUp(new DragonSlayerLeggings());
+//			hero.pickUp(new ShotGun());
+//			hero.pickUp(new Sword());
+//		} catch (Exception e) {
+//			System.out.println(e);
+//		}
+//		refresh();
+
+		hero.setWeapon(new Weapon("Pelle cassee", 0, 100, 2, 0));
+		fight1v1();
+
+//		play();
+	}
+
+	public static void main(String[] args) {
+		LearningSoulsGame lsg = new LearningSoulsGame() ;
+		lsg.title();
+		lsg.init() ;
+		lsg.testExceptions();
 	}
 
 }

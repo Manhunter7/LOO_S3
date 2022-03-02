@@ -2,6 +2,7 @@ package lsg.weapons;
 
 import lsg.consumables.repair.RepairKit;
 import lsg.bags.Collectible;
+import lsg.exceptions.ConsumeNullException;
 
 public class Weapon implements Collectible{
 
@@ -27,7 +28,8 @@ public class Weapon implements Collectible{
 		return 2 ;
 	}
 
-	public void repairWith(RepairKit kit){
+	public void repairWith(RepairKit kit) throws ConsumeNullException {
+		if(kit == null) throw new ConsumeNullException(kit) ;
 		setDurability(durability + kit.use());
 	}
 

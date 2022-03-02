@@ -20,13 +20,5 @@ public abstract class Ring extends BuffItem {
 	public Hero getHero() {
 		return hero;
 	}
-
-	public String getRingName(){
-		return this.name;
-	}
-
-	public int getRingBuff(){
-		return this.power;
-	}
 	
 }
